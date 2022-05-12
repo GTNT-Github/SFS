@@ -7,7 +7,6 @@ shared_state = 1
 [display]
 width = 1280
 height = 720
-vsync = 0
 
 [android]
 input_method = HiddenInputField
@@ -34,7 +33,12 @@ max_particle_count = 102400
 
 [particle_fx]
 max_particle_count = 102400
+max_count = 640000
+max_emitter_count = 640000
 
 [collection]
 max_instances = 9999
+
+[engine]
+fixed_update_frequency = 60
 
