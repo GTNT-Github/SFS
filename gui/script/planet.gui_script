@@ -1,0 +1,19 @@
+local planet
+function on_message(self,message_id,message,sender)
+	if message_id == hash("pos") then
+		gui.set_position(gui.get_node("hitbox"),message.pos)
+		self.planet = message.planet:gsub("%/","")
+		self.pos = message.pos
+		self.speed = message.speed
+	end
+end
+
+function init(self)
+	msg.post(".","acquire_input_focus")
+end
+
+function on_input(self,action_id,action)
+	if gui.pick_node(gui.get_node("hitbox"),action.x,action.y) and action_id == hash("touch") and action.pressed then
+		msg.post("/UI#stats","enableplanet", {planet=self.planet,pos=self.pos,speed=self.speed})
+	end
+end

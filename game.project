@@ -1,0 +1,40 @@
+[bootstrap]
+main_collection = /collections/main.collectionc
+
+[script]
+shared_state = 1
+
+[display]
+width = 1280
+height = 720
+vsync = 0
+
+[android]
+input_method = HiddenInputField
+
+[project]
+title = orbit
+dependencies#0 = https://github.com/indiesoftby/defold-hyper-trails/archive/master.zip
+
+[physics]
+gravity_y = 0.0
+debug = 0
+
+[sprite]
+max_count = 128000
+
+[resource]
+max_resources = 102400
+
+[graphics]
+max_draw_calls = 1024000
+
+[gui]
+max_particle_count = 102400
+
+[particle_fx]
+max_particle_count = 102400
+
+[collection]
+max_instances = 9999
+

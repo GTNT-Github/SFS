@@ -1,0 +1,26 @@
+go.property("currentVelocity",vmath.vector3(0,10,0))
+go.property("self",hash("/planet"))
+G = 2.1
+local planets = {"/planet","/center","/moon"}
+function init(self,dt)
+    self_object = tostring(self.self):gsub("%hash: %[",""):gsub("%]","")
+    msg.post("#hitbox","pos",{pos=go.get_position(),planet=self_object,speed=self.currentVelocity})
+
+    msg.post(".","acquire_input_focus")
+    timer.delay(0.0001,true,function()
+        for i,v in pairs(planets) do
+            if hash(v) ~= self.self then
+                local other_object = v
+                self_object = tostring(self.self):gsub("%hash: %[",""):gsub("%]","")
+                local sqrDst = vmath.length_sqr(go.get_position(other_object)-go.get_position(self_object))
+                local forceDir = vmath.normalize(go.get_position(other_object)-go.get_position(self_object))
+                local force = forceDir * G * go.get(self_object.."#collision", "mass") * go.get(other_object.."#collision", "mass") / sqrDst
+                local acceleration = force/go.get(self_object.."#collision","mass")
+                self.currentVelocity = self.currentVelocity+(acceleration)
+                --go.set_position(go.get_position(self_object)+self.currentVelocity)
+                factory.create("#trails",go.get_position(self_object)+self.currentVelocity,nil,nil,vmath.vector3(0.3,0.3,0.3))
+                msg.post("#hitbox","pos",{pos=go.get_position(),planet=self_object,speed=self.currentVelocity})
+            end
+        end
+    end)
+end

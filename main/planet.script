@@ -1,0 +1,26 @@
+go.property("currentVelocity",vmath.vector3(0,10,0))
+go.property("self",hash("/planet"))
+G = 2.1
+local planets = {"/planet","/center","/moon"}
+function init(self,dt)
+    msg.post(".","acquire_input_focus")
+    --timer.delay(0.0001,true,function()
+        for i,v in pairs(planets) do
+            if hash(v) ~= self.self then
+                print(self.self,go.get_position())
+                local other_object = v
+                self_object = tostring(self.self):gsub("%hash: %[",""):gsub("%]","")
+                local sqrDst = vmath.length_sqr(go.get_position(other_object)-go.get_position(self_object))
+                local forceDir = vmath.normalize(go.get_position(other_object)-go.get_position(self_object))
+                local force = forceDir * G * go.get(self_object.."#collision", "mass") * go.get(other_object.."#collision", "mass") / sqrDst
+                local acceleration = force/go.get(self_object.."#collision","mass")
+                self.currentVelocity = self.currentVelocity+(acceleration)
+                go.set_position(go.get_position(self_object)+self.currentVelocity)
+            end
+        end
+    --end)
+end
+
+function on_input(self,action,action_id)
+    if action
+end
