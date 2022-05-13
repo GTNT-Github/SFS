@@ -1,3 +1,19 @@
+key_trigger {
+  input: KEY_SPACE
+  action: "space"
+}
+key_trigger {
+  input: KEY_BACKSPACE
+  action: "backspace"
+}
+key_trigger {
+  input: KEY_MINUS
+  action: "minus"
+}
+key_trigger {
+  input: KEY_PERIOD
+  action: "period"
+}
 mouse_trigger {
   input: MOUSE_BUTTON_1
   action: "touch"

@@ -1,5 +1,6 @@
 local nodetext
 local selected
+local planet
 function init(self)
 	nodetext = {"x","y","z"}
 	msg.post(".","acquire_input_focus")
@@ -11,6 +12,7 @@ function on_message(self, message_id, message, sender)
 		msg.post("#","enable")
 		gui.set_text(gui.get_node("planet"),message.planet)
 		local pos = message.pos
+		planet = message.planet
 		gui.set_position(gui.get_node("stats"),vmath.vector3(pos.x+145,pos.y,pos.z))
 		gui.set_position(gui.get_node("highlight"),pos)
 		gui.set_text(gui.get_node("x_text"),"X: "..message.speed.x)
@@ -19,18 +21,56 @@ function on_message(self, message_id, message, sender)
 	end
 end
 
-function on_input(self, action_id, action)
-    if action_id == hash("text") then
-		if selected then
-			if action_id == hash("text") and tonumber(action.text) then
-				local text = gui.get_text(gui.get_node(selected.."_text"))
-				local selectedCaps = string.upper(selected)
-				local text = text:gsub(selectedCaps..": ",""):gsub("%|","")
-				local text = text..action.text
-   				gui.set_text(gui.get_node(selected.."_text"),selectedCaps..": "..text.."|")
+local function updateVelocity()
+	local velX = (gui.get_text(gui.get_node("x_text")):gsub("X: ",""):gsub("%|",""))
+	local velY = (gui.get_text(gui.get_node("y_text")):gsub("Y: ",""):gsub("%|",""))
+	local velZ = (gui.get_text(gui.get_node("z_text")):gsub("Z: ",""):gsub("%|",""))
+	if velX == "" then
+		velX = 0
+	elseif velY == "" then
+		velY = 0
+	elseif velZ == "" then
+		velZ = 0		
+	end
+	velocities["/"..planet] = vmath.vector3(velX,velY,velZ)
+end
 
-			end
+function on_input(self, action_id, action)
+    if action_id == hash("text") and selected  and tonumber(action.text) and action.text ~= "." then
+		local text = gui.get_text(gui.get_node(selected.."_text"))
+		local selectedCaps = string.upper(selected)
+		local text = text:gsub(selectedCaps..": ",""):gsub("%|","")
+		local text = text..action.text
+		gui.set_text(gui.get_node(selected.."_text"),selectedCaps..": "..text.."|")
+		updateVelocity()
+	elseif action_id == hash("backspace") and action.repeated and selected then
+		local text = gui.get_text(gui.get_node(selected.."_text"))
+		local selectedCaps = string.upper(selected)
+		local text = text:gsub(selectedCaps..": ",""):gsub("%|","")
+		local text = string.sub(text, 0, -2)
+		if text ~= "-" then
+			gui.set_text(gui.get_node(selected.."_text"),selectedCaps..": "..text.."|")
+		elseif text:sub(-1) == "." then
+			gui.set_text(gui.get_node(selected.."_text"),selectedCaps..": "..text:sub(-1,-2)"|")
+		else
+			gui.set_text(gui.get_node(selected.."_text"),selectedCaps..": ".."|")
 		end
+		updateVelocity()
+	elseif action_id == hash("minus") and selected and action.pressed then
+		local text = gui.get_text(gui.get_node(selected.."_text"))
+		local selectedCaps = string.upper(selected)
+		local text = text:gsub(selectedCaps..": ",""):gsub("%|","")
+		if text ~= "" then
+			text = text*-1
+		end
+		gui.set_text(gui.get_node(selected.."_text"),selectedCaps..": "..text.."|")
+		updateVelocity()
+	elseif action_id == hash("period") and action.pressed and selected then
+		local text = gui.get_text(gui.get_node(selected.."_text"))
+		local selectedCaps = string.upper(selected)
+		local text = text:gsub(selectedCaps..": ",""):gsub("%|","")
+		local text = text.."."
+		gui.set_text(gui.get_node(selected.."_text"),selectedCaps..": "..text.."|")
 	end
 	for i,v in pairs(nodetext) do
 		if gui.pick_node(gui.get_node(v),action.x,action.y) and action_id == hash("touch") and action.pressed then

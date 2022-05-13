@@ -114,9 +114,9 @@ infoplist = /builtins/manifests/osx/Info.plist
 localizations = en
 
 [particle_fx]
-max_count = 640000
-max_emitter_count = 640000
-max_particle_count = 102400
+max_count = 64000000
+max_emitter_count = 64000000
+max_particle_count = 10240000
 
 [physics]
 allow_dynamic_transforms = 1

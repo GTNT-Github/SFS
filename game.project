@@ -32,9 +32,9 @@ max_draw_calls = 1024000
 max_particle_count = 102400
 
 [particle_fx]
-max_particle_count = 102400
-max_count = 640000
-max_emitter_count = 640000
+max_particle_count = 10240000
+max_count = 64000000
+max_emitter_count = 64000000
 
 [collection]
 max_instances = 9999
